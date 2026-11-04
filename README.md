@@ -18,7 +18,7 @@ The backend maintains conversation context in memory. Quick-action buttons start
 Use Python 3.11 and Node.js with npm. The backend requires an OpenAI API key and network access for model services.
 
 ```sh
-git clone https://github.com/anushaxrama/it-helpdesk-chatbot.git
+git clone https://github.com/anusharama100/it-helpdesk-chatbot.git
 cd it-helpdesk-chatbot
 python3 -m venv .venv
 source .venv/bin/activate
