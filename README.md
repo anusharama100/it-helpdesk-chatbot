@@ -43,8 +43,6 @@ npm run dev
 
 Open [localhost:5173](http://localhost:5173). The API defaults to [localhost:8000](http://localhost:8000), with interactive documentation at [/docs](http://localhost:8000/docs). The frontend defaults to that API address; `VITE_API_BASE_URL` can override it.
 
-The tracked backend template is named `.env_example` with an underscore. There is no tracked frontend environment template to copy.
-
 ## Try it
 
 Ask “My Zoom audio isn't working,” follow up with what you have already tried, and inspect the returned source references. Compare that with a quick action for a password or networking issue.
