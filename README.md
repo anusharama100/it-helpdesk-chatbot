@@ -1,21 +1,20 @@
 # IT Helpdesk Chatbot
 
-A support-chat prototype for common workplace IT questions, including Wi-Fi, password resets, software installation, and audio/video troubleshooting. It retrieves relevant entries from a CSV knowledge base and uses them to generate a conversational answer.
+A React chat interface backed by a Python service for common IT questions. It looks up relevant entries in a CSV knowledge base and uses those entries to generate an answer with source references.
 
-The project connects a React chat interface to a Python API, with source references and an escalation path when a conversation needs human help.
+**React · TypeScript · FastAPI · LangChain · OpenAI · ChromaDB**
 
-## How a request moves through the system
+## How it works
 
 ```text
-React chat -> FastAPI -> knowledge retrieval in ChromaDB
-                       -> LangChain + OpenAI -> JSON answer and sources
+React chat → FastAPI → ChromaDB retrieval → model response + sources
 ```
 
-The backend maintains conversation context in memory. Quick-action buttons start common troubleshooting flows. Escalation returns a simulated ticket ID; it does not create a ticket in Jira or ServiceNow, send email, or notify a support team.
+Quick actions start common troubleshooting requests. Conversations stay in memory. The escalation flow returns a sample ticket ID; it does not send a ticket to a support team.
 
 ## Run locally
 
-Use Python 3.11 and Node.js with npm. The backend requires an OpenAI API key and network access for model services.
+Use Python 3.11 and Node.js with npm. Model requests require your own OpenAI API key and can incur usage charges.
 
 ```sh
 git clone https://github.com/anusharama100/it-helpdesk-chatbot.git
@@ -27,11 +26,7 @@ cd backend
 cp .env_example .env
 ```
 
-Add your own key to `backend/.env`, then start the API from that directory:
-
-```sh
-python main.py
-```
+Add your key to `backend/.env`, then run `python main.py` from `backend/`. Keep the key on the backend.
 
 In a second terminal, from the repository root:
 
@@ -41,36 +36,21 @@ npm install
 npm run dev
 ```
 
-Open [localhost:5173](http://localhost:5173). The API defaults to [localhost:8000](http://localhost:8000), with interactive documentation at [/docs](http://localhost:8000/docs). The frontend defaults to that API address; `VITE_API_BASE_URL` can override it.
+Open [localhost:5173](http://localhost:5173). The API uses [localhost:8000](http://localhost:8000), with endpoint documentation at [/docs](http://localhost:8000/docs). Set `VITE_API_BASE_URL` if the backend runs elsewhere.
 
 ## Try it
 
-Ask “My Zoom audio isn't working,” follow up with what you have already tried, and inspect the returned source references. Compare that with a quick action for a password or networking issue.
+Ask “My Zoom audio isn't working,” then explain what you have already tried. Inspect the source references and compare the answer with a networking or password-reset quick action.
 
-| Endpoint | Purpose |
-| --- | --- |
-| `POST /chat` | Submit a message and optional conversation ID |
-| `GET /quick-actions` | List common support tasks |
-| `POST /quick-action/{action_id}` | Start a predefined troubleshooting request |
-| `POST /ticket` | Simulate escalation |
-| `GET /conversation/{id}/history` | Read in-memory conversation history |
-| `DELETE /conversation/{id}` | Clear a conversation |
-| `GET /health` | Inspect initialized services |
+## Code to start with
 
-Responses arrive as JSON; the current chat endpoint does not stream tokens. The analytics endpoint logs events rather than serving an analytics dashboard.
+- `backend/data/it_knowledge.csv` — knowledge source.
+- `backend/knowledge_base.py` — retrieval setup.
+- `backend/chat_engine.py` — conversation logic.
+- `frontend/` — chat interface and API client.
 
-## Implementation
+## Project status
 
-- **Backend:** FastAPI, Pydantic, LangChain, OpenAI, and ChromaDB.
-- **Frontend:** React, TypeScript, Vite, Tailwind CSS, and Axios.
-- **Knowledge source:** `backend/data/it_knowledge.csv`.
-- **Retrieval setup:** `backend/knowledge_base.py`.
-- **Conversation logic:** `backend/chat_engine.py`.
+A development prototype with JSON responses, in-memory conversations, and simulated tickets. Authentication, durable history, real ticket delivery, and answer-quality evaluation remain open work.
 
-Backend configuration includes `MODEL_NAME`, `TEMPERATURE`, `MAX_TOKENS`, `CORS_ORIGINS`, and `CHROMA_PERSIST_DIRECTORY`. Keep credentials on the backend.
-
-## Scope and follow-up work
-
-This is a development prototype with in-memory conversations and simulated ticket handling. Production work includes authentication, durable storage, real ticket delivery, and evaluation of answer quality against the knowledge base. API usage may incur provider charges.
-
-Additional setup notes are in [SETUP.md](SETUP.md), and the repository includes Docker configuration for further development.
+See [SETUP.md](SETUP.md) for configuration and Docker notes.
